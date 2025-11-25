@@ -1,66 +1,110 @@
-# Accounting System (freee + Beancount)
+# freee Automation
 
-Hybrid accounting system combining freee (cloud accounting) with Beancount (plain-text accounting) for audit and analysis.
+Monorepo for freee accounting automation tools and integrations.
 
-freee（クラウド会計）とBeancount（プレーンテキスト会計）を組み合わせたハイブリッド会計システム。freeeを日常業務に使用し、Beancountで監査・分析を行います。
+freee会計の自動化ツールと連携システムのモノレポ。Gmail/Amazonからのレシート取得、freee APIエミュレーター、Beancount連携を統合管理します。
 
-## System Architecture
+## Repository
 
-```
-freee (Master Data)
-  ↓ freee-sync (Go CLI)
-Beancount (Audit & Analysis Layer)
-  ↓
-Fava Web UI (Dashboard)
-```
+https://github.com/pigeonworks-llc/freee-automation
 
-## Features
+## Components
 
-- **Monthly Audit**: Balance sheet and income statement validation
-- **Evidence Reconciliation**: Bank statement and credit card statement matching
-- **Recurring Transaction Check**: Detect missing rent, subscriptions, etc.
-- **Amazon Receipt Integration**: Semi-automated receipt download and attachment
-- **Detailed Analysis**: Complex reports not available in freee
-- **Duplicate Prevention**: SQLite-based sync history tracking
+### 1. emulator
+
+freee会計APIのエミュレーター。ローカル開発やテスト環境で動作確認が可能。
+
+- OAuth2.0対応（refresh_token, company_id）
+- Walletables API (GET /api/1/walletables)
+- Deals API with Payments支援
+- wallet_txns自動リンク（自動で経理）
+- 詳細: [emulator/README.md](emulator/README.md)
+
+### 2. gmail-receipt-fetcher
+
+Gmailからレシートを自動取得し、freeeへアップロードするツール（Go）。
+
+- Gmail API連携（OAuth2.0）
+- PDF領収書の自動ダウンロード
+- freee API統合（wallet_txn作成、Deal作成）
+- 勘定科目の自動判定（keyword-based mapping）
+- 詳細: [gmail-receipt-fetcher/README.md](gmail-receipt-fetcher/README.md)
+
+### 3. amazon-receipt-processor
+
+Amazonの領収書を自動取得・処理するツール（TypeScript + Playwright）。
+
+- Amazon注文履歴のスクレイピング
+- 領収書PDFの自動ダウンロード
+- freee APIへのアップロード
+- 詳細: [amazon-receipt-processor/README.md](amazon-receipt-processor/README.md)
+
+### 4. beancount
+
+freeeとBeancountを組み合わせたハイブリッド会計システム。
+
+- freeeをマスターデータとして使用
+- Beancountで監査・分析レイヤーを構築
+- 月次監査、証憑突合、定期取引チェック
+- Fava Web UI でダッシュボード表示
+
+### 5. cmd/freee-sync
+
+freeeからBeancountへのデータ同期ツール（Go CLI）。
+
+- freee API → Beancount変換
+- SQLite based duplicate prevention
+- Pagination対応
+- Cobra CLI framework
+
+### 6. pkg
+
+共有Goパッケージ群。
+
+- `config`: 設定管理
+- `freee`: freee APIクライアント
+- `beancount`: Beancountファイル操作
+- `converter`: freee → Beancount変換
+- `db`: SQLite database layer
+- `pathutil`: Path resolution
 
 ## Project Structure
 
 ```
-accounting-system/
-├── beancount/                # Beancount ledger files
-│   ├── main.beancount       # Main ledger (includes all)
-│   ├── accounts.beancount   # Account definitions
-│   ├── opening-balances.beancount
-│   ├── 2024/                # Monthly transaction files
-│   ├── 2025/
-│   ├── documents/           # Receipt PDFs
-│   ├── attachments/         # Document attachments
-│   └── .sync/               # SQLite sync database
-├── cmd/                      # Go CLI applications
-│   └── freee-sync/          # freee → Beancount sync tool
-├── pkg/                      # Go shared packages
-│   ├── config/              # Configuration management
-│   ├── pathutil/            # Path resolution utilities
-│   ├── db/                  # SQLite database layer
-│   ├── beancount/           # Beancount file operations
-│   ├── freee/               # freee API client
-│   └── converter/           # freee → Beancount converter
-├── emulator/                 # freee API emulator (for development)
-├── amazon-receipt-processor/ # Amazon receipt download tool (TypeScript)
-├── config/                   # Configuration files
-│   └── account-mapping.yaml # freee ↔ Beancount mapping
-├── bin/                      # Executable scripts & binaries
-│   ├── fava-start           # Fava startup script
-│   └── freee-sync           # Sync CLI binary
-├── _archive/                 # Archived TypeScript implementations
-│   ├── freee-sync-ts/       # Original freee-sync (TypeScript)
-│   └── shared-ts/           # Original shared library (TypeScript)
-└── docs/                     # Documentation
+freee-automation/
+├── emulator/                   # freee API emulator (Go)
+├── gmail-receipt-fetcher/      # Gmail receipt automation (Go)
+├── amazon-receipt-processor/   # Amazon receipt automation (TypeScript)
+├── beancount/                  # Beancount ledger files
+│   ├── main.beancount
+│   ├── accounts.beancount
+│   ├── 2024/, 2025/           # Monthly transactions
+│   └── documents/             # Receipt PDFs
+├── cmd/freee-sync/             # freee → Beancount sync tool
+├── pkg/                        # Shared Go packages
+├── config/                     # Configuration files
+├── docs/                       # Documentation
+├── bin/                        # Executables
+└── go.work                     # Go workspace
 ```
 
 ## Quick Start
 
-### 1. Build
+### Prerequisites
+
+- Go 1.25+
+- Node.js 18+ (for amazon-receipt-processor)
+- Beancount 3.2.0+ (for beancount integration)
+- Fava 1.30.7+ (for web UI)
+
+### 1. Clone Repository
+
+```bash
+git clone https://github.com/pigeonworks-llc/freee-automation.git
+cd freee-automation
+```
+
+### 2. Build
 
 ```bash
 # Build all Go binaries
@@ -71,57 +115,54 @@ make freee-sync-build
 make emulator-build
 ```
 
-### 2. Configure
+### 3. Start Emulator (for development)
 
 ```bash
-# Copy and edit configuration
-cp .env.example .env
-# Edit .env with your freee API credentials
+cd emulator
+task run
+
+# Or using Make
+make emulator-dev
 ```
 
-### 3. Sync from freee
+### 4. Gmail Receipt Fetcher
 
 ```bash
-# Sync transactions
+cd gmail-receipt-fetcher
+
+# Setup credentials
+cp credentials.json.example credentials.json
+# Edit credentials.json with your Gmail API credentials
+
+# Run
+./bin/auto-fetch --credentials credentials.json --freee-api http://localhost:8080
+```
+
+### 5. Beancount Integration
+
+```bash
+# Sync from freee
 ./bin/freee-sync sync --from 2024-01-01 --to 2024-12-31
 
-# Dry run (preview without writing)
-./bin/freee-sync sync --from 2024-01-01 --to 2024-12-31 --dry-run
-
-# View sync statistics
-./bin/freee-sync stats
-```
-
-### 4. Launch Fava Dashboard
-
-```bash
+# Launch Fava dashboard
 ./bin/fava-start
 ```
 
-Then open http://localhost:5000 in your browser.
+Open http://localhost:5000 in your browser.
 
 ## Development
 
-### Prerequisites
+### Go Workspace
 
-- Go 1.25+ (for freee-sync and emulator)
-- Beancount 3.2.0+ (installed via Homebrew)
-- Fava 1.30.7+ (installed via Homebrew)
-- Node.js 18+ (for amazon-receipt-processor)
-
-### Using the Emulator
-
-For development without freee API access:
+This monorepo uses Go workspace (go.work):
 
 ```bash
-# Start emulator
-make emulator-dev
+# All Go modules are managed together
+go work use . ./emulator ./gmail-receipt-fetcher
 
-# Seed test data
-cd emulator && ./scripts/seed.sh
-
-# Get access token and configure .env
-curl -X POST http://localhost:8080/oauth/token -d "grant_type=client_credentials"
+# Build from anywhere
+go build ./emulator/cmd/server
+go build ./gmail-receipt-fetcher/cmd/auto-fetch
 ```
 
 ### Make Targets
@@ -145,74 +186,13 @@ make build-all         # Build everything
 make clean-all         # Clean everything
 ```
 
-### Running Tests
+## Documentation
 
-```bash
-# Validate Beancount syntax
-bean-check beancount/main.beancount
-
-# Run balance check
-bean-query beancount/main.beancount "SELECT account, sum(position) WHERE account ~ '^Assets'"
-```
-
-## Current Status
-
-### Phase 1: Environment Setup - COMPLETED
-
-- [x] Project structure created
-- [x] Beancount 3.2.0 installed
-- [x] Fava 1.30.7 installed
-- [x] Account chart designed (Japanese GAAP compliant)
-- [x] freee ↔ Beancount mapping defined
-- [x] Basic .beancount files created
-- [x] Fava startup script created
-
-### Phase 2: Go Rewrite - COMPLETED
-
-- [x] freee-sync rewritten in Go
-- [x] Shared packages (pkg/*) implemented
-- [x] freee API client with pagination
-- [x] SQLite sync history for duplicate prevention
-- [x] freee-emulator integrated into monorepo
-- [x] CLI with Cobra (sync, stats commands)
-- [x] TypeScript version archived to _archive/
-
-### Phase 3: Audit Features - PLANNED
-
-- [ ] Balance sheet checker
-- [ ] Income statement checker
-- [ ] Recurring transaction checker
-
-### Phase 4: Amazon Integration - PLANNED
-
-- [ ] Semi-automated receipt download
-- [ ] Receipt upload to freee
-- [ ] Transaction matching
-
-## Account Mapping
-
-See `config/account-mapping.yaml` for the complete mapping between freee accounts and Beancount accounts.
-
-Example:
-- freee: "普通預金" → Beancount: `Assets:Current:Bank:Ordinary`
-- freee: "地代家賃" → Beancount: `Expenses:SGA:Rent`
-- freee: "売上高" → Beancount: `Income:Sales:Products`
-
-## Configuration
-
-Environment variables (`.env`):
-
-```bash
-# freee API
-FREEE_API_URL=http://localhost:8080  # Use emulator for development
-FREEE_ACCESS_TOKEN=your_token_here
-FREEE_COMPANY_ID=1
-
-# Beancount
-BEANCOUNT_ROOT=./beancount
-BEANCOUNT_DB_PATH=./beancount/.sync/sync.db
-BEANCOUNT_ATTACHMENTS_DIR=./beancount/attachments
-```
+- [API Reference](docs/api-reference.md) - freee API reference
+- [Architecture](docs/architecture.md) - System architecture
+- [Getting Started](docs/getting-started.md) - Detailed setup guide
+- [Emulator Deployment](emulator/docs/deployment.md) - Cloud Run deployment
+- [Automation Guide](emulator/docs/automation-guide.md) - freee API automation
 
 ## Japanese Accounting Standards
 
@@ -224,12 +204,13 @@ This system follows Japanese GAAP (Generally Accepted Accounting Principles):
 
 ## Tech Stack
 
-- **Language**: Go 1.25 (sync tool, emulator), TypeScript (amazon-receipt-processor)
+- **Language**: Go 1.25, TypeScript
 - **Beancount**: 3.2.0 (double-entry accounting)
 - **Fava**: 1.30.7 (web UI)
 - **freee API**: OAuth2 + REST
-- **Database**: SQLite (sync history)
+- **Database**: SQLite, BoltDB
 - **CLI Framework**: Cobra
+- **Web Automation**: Playwright
 
 ## License
 
