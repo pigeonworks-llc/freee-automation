@@ -1,0 +1,11 @@
+# Bootstrap Configuration Example
+# cp terraform.tfvars.example terraform.tfvars
+
+project_id = "your-gcp-project-id"
+region     = "asia-northeast1"
+
+# 自分のメールアドレス（gcloud config get-value accountで確認）
+admin_email = "your-email@example.com"
+
+# CI/CD用サービスアカウント（オプション）
+service_account_email = ""

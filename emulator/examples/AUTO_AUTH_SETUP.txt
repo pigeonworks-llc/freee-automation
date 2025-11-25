@@ -1,0 +1,162 @@
+==============================================
+freee 未仕訳チェッカー 完全自動化セットアップガイド
+==============================================
+
+このガイドでは、Playwright + totp-cli を使った完全自動化の設定方法を説明します。
+
+## 前提条件
+
+1. freee OAuth2アプリケーションの作成
+   - https://developer.freee.co.jp/ でアプリを作成
+   - Client ID と Client Secret を取得
+
+2. 必要なツールのインストール
+
+   # Playwright のインストール
+   go run github.com/playwright-community/playwright-go/cmd/playwright@latest install
+
+   # totp-cli のインストール (macOS)
+   brew install totp-cli
+
+   # totp-cli のインストール (Linux/その他)
+   # https://github.com/yitsushi/totp-cli からバイナリをダウンロード
+
+## セットアップ手順
+
+### 1. 環境変数の設定
+
+必須の環境変数を設定します：
+
+# freee OAuth2 認証情報
+export FREEE_CLIENT_ID="your_client_id_here"
+export FREEE_CLIENT_SECRET="your_client_secret_here"
+export FREEE_COMPANY_ID="123456"  # 事業所ID
+
+# freee ログイン情報
+export FREEE_LOGIN_EMAIL="your@email.com"
+export FREEE_LOGIN_PASSWORD="your_password"
+
+# 2FA (TOTP) シークレット
+export FREEE_TOTP_SECRET="BASE32_SECRET_HERE"
+
+# 自動再認証を有効化
+export FREEE_AUTO_REAUTH="true"
+
+# オプション: Google Chat通知
+export GOOGLE_CHAT_WEBHOOK="https://chat.googleapis.com/v1/spaces/..."
+
+
+### 2. TOTP Secret の取得方法
+
+freee の2要素認証を設定する際に表示されるQRコードから、
+Base32形式のシークレットを取得します。
+
+方法1: QRコードをスキャンせず、「手動で入力」を選択
+  → Base32形式のシークレットが表示されます
+
+方法2: 既存のAuthenticatorアプリからエクスポート
+  - Google Authenticator, Authy 等からエクスポート機能を使用
+
+
+### 3. 初回認証（手動）
+
+初回のみ、自動認証スクリプトを実行します：
+
+cd /path/to/freee-emulator
+go run examples/freee_oauth_auto.go
+
+※ ブラウザが自動で開き、ログイン→2FA→認証が完了します
+※ HEADLESS=false を設定すると、ブラウザの動作が見えます：
+   export HEADLESS=false
+   go run examples/freee_oauth_auto.go
+
+
+### 4. チェッカーの実行
+
+初回認証後、以下のコマンドで未仕訳チェッカーを実行できます：
+
+go run examples/unbooked_checker_production.go
+
+トークンが期限切れになっても、FREEE_AUTO_REAUTH=true が設定されていれば
+自動的に再認証が実行されます。
+
+
+### 5. cron での定期実行
+
+週2回実行する例：
+
+# crontab -e で以下を追加
+
+# 環境変数ファイルを用意
+0 9 * * 1,4 cd /path/to/freee-emulator && source ~/.freee_env && go run examples/unbooked_checker_production.go >> /var/log/freee_checker.log 2>&1
+
+# ~/.freee_env の内容例:
+export FREEE_CLIENT_ID="..."
+export FREEE_CLIENT_SECRET="..."
+export FREEE_COMPANY_ID="..."
+export FREEE_LOGIN_EMAIL="..."
+export FREEE_LOGIN_PASSWORD="..."
+export FREEE_TOTP_SECRET="..."
+export FREEE_AUTO_REAUTH="true"
+export GOOGLE_CHAT_WEBHOOK="..."
+
+
+## トラブルシューティング
+
+### Q: Playwrightでブラウザが起動しない
+
+A: Playwrightのインストールを再実行してください：
+   go run github.com/playwright-community/playwright-go/cmd/playwright@latest install --with-deps
+
+### Q: totp-cliが見つからない
+
+A: PATHを確認してください：
+   which totp-cli
+   または、絶対パスを環境変数で指定：
+   export TOTP_CLI_PATH="/usr/local/bin/totp-cli"
+
+### Q: 2FAコードが正しくない
+
+A: FREEE_TOTP_SECRET が正しいか確認してください。
+   手動でテスト：
+   totp-cli generate $FREEE_TOTP_SECRET
+
+### Q: 自動再認証が動作しない
+
+A: 以下を確認：
+   1. FREEE_AUTO_REAUTH=true が設定されているか
+   2. すべての認証情報（EMAIL, PASSWORD, TOTP_SECRET）が設定されているか
+   3. freee_oauth_auto.go が存在するか（examples/ ディレクトリ内）
+
+### Q: freeeのログイン画面が変わった
+
+A: freee_oauth_auto.go のセレクタを修正する必要があります。
+   HEADLESS=false で実行して、どの要素が変わったか確認してください。
+
+
+## セキュリティの注意
+
+1. 環境変数ファイル (~/.freee_env) のパーミッションを 600 に設定：
+   chmod 600 ~/.freee_env
+
+2. トークンファイル (~/.freee/token.json) は自動的に 600 で保存されます
+
+3. TOTP Secret は厳重に管理してください（第三者に漏れないように）
+
+
+## 完全ゼロタッチ運用
+
+上記のセットアップ完了後：
+- 週2回、cronで自動実行
+- トークン期限切れ時も自動再認証
+- 未仕訳が見つかったら自動通知
+- 人間の介入は不要
+
+ただし、以下の場合は手動対応が必要：
+- freeeのパスワード変更時 → FREEE_LOGIN_PASSWORD を更新
+- freeeのログイン画面UI変更時 → freee_oauth_auto.go のセレクタを修正
+
+
+==============================================
+以上でセットアップ完了です！
+==============================================

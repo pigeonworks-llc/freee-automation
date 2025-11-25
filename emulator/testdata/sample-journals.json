@@ -1,0 +1,76 @@
+[
+  {
+    "company_id": 1,
+    "issue_date": "2025-02-01",
+    "details": [
+      {
+        "entry_type": "debit",
+        "account_item_id": 135,
+        "tax_code": 0,
+        "amount": 100000,
+        "vat": 0,
+        "description": "普通預金"
+      },
+      {
+        "entry_type": "credit",
+        "account_item_id": 400,
+        "tax_code": 1,
+        "amount": 90909,
+        "vat": 9091,
+        "description": "売上高"
+      }
+    ]
+  },
+  {
+    "company_id": 1,
+    "issue_date": "2025-02-05",
+    "details": [
+      {
+        "entry_type": "debit",
+        "account_item_id": 801,
+        "tax_code": 1,
+        "amount": 45454,
+        "vat": 4546,
+        "description": "仕入高"
+      },
+      {
+        "entry_type": "debit",
+        "account_item_id": 138,
+        "tax_code": 0,
+        "amount": 5000,
+        "vat": 0,
+        "description": "支払手数料"
+      },
+      {
+        "entry_type": "credit",
+        "account_item_id": 135,
+        "tax_code": 0,
+        "amount": 50000,
+        "vat": 0,
+        "description": "普通預金"
+      }
+    ]
+  },
+  {
+    "company_id": 1,
+    "issue_date": "2025-02-15",
+    "details": [
+      {
+        "entry_type": "debit",
+        "account_item_id": 135,
+        "tax_code": 0,
+        "amount": 200000,
+        "vat": 0,
+        "description": "売掛金回収"
+      },
+      {
+        "entry_type": "credit",
+        "account_item_id": 141,
+        "tax_code": 0,
+        "amount": 200000,
+        "vat": 0,
+        "description": "売掛金"
+      }
+    ]
+  }
+]

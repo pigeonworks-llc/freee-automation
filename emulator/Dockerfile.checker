@@ -1,0 +1,66 @@
+# Cloud Run用 未仕訳チェッカー Dockerfile
+# マルチステージビルドで最適化
+
+# ビルドステージ
+FROM golang:1.22-alpine AS builder
+
+WORKDIR /app
+
+# 依存関係をキャッシュするため、go.mod/go.sumを先にコピー
+COPY go.mod go.sum ./
+RUN go mod download
+
+# ソースコードをコピー
+COPY . .
+
+# バイナリをビルド（静的リンク）
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o checker-server ./cmd/checker-server
+
+# 実行ステージ
+FROM alpine:latest
+
+# Playwrightとtotp-cliのインストール（自動再認証用）
+RUN apk --no-cache add \
+    chromium \
+    ca-certificates \
+    && rm -rf /var/cache/apk/*
+
+# totp-cliのインストール
+RUN wget https://github.com/yitsushi/totp-cli/releases/download/v1.8.5/totp-cli_1.8.5_linux_amd64.tar.gz \
+    && tar -xzf totp-cli_1.8.5_linux_amd64.tar.gz \
+    && mv totp-cli /usr/local/bin/ \
+    && chmod +x /usr/local/bin/totp-cli \
+    && rm totp-cli_1.8.5_linux_amd64.tar.gz
+
+WORKDIR /app
+
+# ビルドステージからバイナリをコピー
+COPY --from=builder /app/checker-server .
+
+# 自動認証スクリプトもコピー（オプション）
+COPY --from=builder /app/examples/freee_oauth_auto.go ./freee_oauth_auto.go
+
+# Cloud Run用の環境変数
+ENV PORT=8080
+ENV PLAYWRIGHT_BROWSERS_PATH=/app/.cache/ms-playwright
+
+# Playwrightブラウザのインストール
+RUN apk add --no-cache \
+    nodejs \
+    npm \
+    && npm install -g playwright@latest \
+    && playwright install chromium \
+    && playwright install-deps chromium \
+    && npm cache clean --force \
+    && apk del npm
+
+# 非rootユーザーで実行
+RUN addgroup -S appgroup && adduser -S appuser -G appgroup
+USER appuser
+
+# ヘルスチェック
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+  CMD wget --no-verbose --tries=1 --spider http://localhost:${PORT}/health || exit 1
+
+# サーバー起動
+CMD ["./checker-server"]

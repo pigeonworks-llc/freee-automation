@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+#
+# Fava Web UI Startup Script
+# Fava WebUIの起動スクリプト
+#
+# Usage:
+#   fava-start [port]
+#
+# Default port: 5000
+
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+BEANCOUNT_FILE="$PROJECT_ROOT/beancount/main.beancount"
+
+PORT="${1:-5000}"
+
+# Check if Beancount file exists
+if [ ! -f "$BEANCOUNT_FILE" ]; then
+    echo "❌ Error: Beancount file not found: $BEANCOUNT_FILE"
+    exit 1
+fi
+
+# Validate Beancount syntax before starting Fava
+echo "🔍 Validating Beancount syntax..."
+if ! bean-check "$BEANCOUNT_FILE"; then
+    echo "❌ Error: Beancount validation failed"
+    echo "Please fix syntax errors before starting Fava"
+    exit 1
+fi
+
+echo "✅ Beancount validation passed"
+echo ""
+echo "🚀 Starting Fava on port $PORT..."
+echo "📊 Dashboard: http://localhost:$PORT"
+echo ""
+echo "Press Ctrl+C to stop Fava"
+echo ""
+
+# Start Fava
+fava "$BEANCOUNT_FILE" --port "$PORT" --host 127.0.0.1

@@ -1,0 +1,46 @@
+version: '3'
+
+tasks:
+  build:
+    desc: Build all binaries
+    cmds:
+      - go build -o bin/gmail-fetcher ./cmd/gmail-fetcher/
+      - go build -o bin/auto-fetch ./cmd/auto-fetch/
+    sources:
+      - "**/*.go"
+    generates:
+      - bin/gmail-fetcher
+      - bin/auto-fetch
+
+  run:
+    desc: Run gmail-fetcher (requires credentials.json)
+    deps: [build]
+    cmds:
+      - ./bin/gmail-fetcher {{.CLI_ARGS}}
+
+  auto-fetch:
+    desc: Run auto-fetch with freee integration
+    deps: [build]
+    cmds:
+      - ./bin/auto-fetch {{.CLI_ARGS}}
+
+  dry-run:
+    desc: Run in dry-run mode (no downloads)
+    deps: [build]
+    cmds:
+      - ./bin/gmail-fetcher --dry-run {{.CLI_ARGS}}
+
+  clean:
+    desc: Clean build artifacts
+    cmds:
+      - rm -rf bin/
+
+  test:
+    desc: Run tests
+    cmds:
+      - go test ./...
+
+  tidy:
+    desc: Run go mod tidy
+    cmds:
+      - go mod tidy

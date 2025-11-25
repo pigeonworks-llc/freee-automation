@@ -1,0 +1,29 @@
+# terraform.tfvars.example
+# このファイルを terraform.tfvars にコピーして値を設定してください
+# cp terraform.tfvars.example terraform.tfvars
+
+# GCP プロジェクト設定
+project_id = "your-gcp-project-id"
+region     = "asia-northeast1" # 東京リージョン
+
+# Cloud Run設定
+service_name    = "freee-checker"
+container_image = "gcr.io/your-gcp-project-id/freee-checker:latest"
+
+# freee OAuth2設定
+freee_client_id     = "your_freee_client_id"
+freee_client_secret = "your_freee_client_secret"
+freee_company_id    = "123456"
+
+# Google Chat通知（オプション）
+google_chat_webhook = "https://chat.googleapis.com/v1/spaces/xxx/messages?key=xxx&token=xxx"
+
+# Cloud Schedulerスケジュール設定
+schedule  = "0 9 * * 1,4" # 月曜と木曜の9時（JST）
+time_zone = "Asia/Tokyo"
+
+# 認証設定（本番環境では false にしてください）
+allow_unauthenticated = false
+
+# エラーアラート通知先メールアドレス（オプション）
+alert_email = "your-email@example.com"

@@ -1,0 +1,64 @@
+version: 1
+
+# アーキテクチャルール定義
+rules:
+  # internalパッケージのルール
+  - name: "internal package isolation"
+    description: "internal配下のパッケージは外部から参照できない"
+    packages:
+      - "**.internal.**"
+    cannotBeImportedBy:
+      - "!**.internal.**"
+
+  # レイヤー依存ルール
+  - name: "api layer dependencies"
+    description: "apiパッケージはstoreとmodelsに依存できる"
+    packages:
+      - "**.api.**"
+    canOnlyDependOn:
+      - "**.models.**"
+      - "**.store.**"
+      - "**.oauth.**"
+      - "std"
+      - "github.com/go-chi/chi/v5"
+      - "github.com/google/uuid"
+
+  - name: "store layer dependencies"
+    description: "storeパッケージはmodelsのみに依存できる"
+    packages:
+      - "**.store.**"
+    canOnlyDependOn:
+      - "**.models.**"
+      - "std"
+      - "go.etcd.io/bbolt"
+
+  - name: "oauth layer dependencies"
+    description: "oauthパッケージはstoreに依存できる"
+    packages:
+      - "**.oauth.**"
+    canOnlyDependOn:
+      - "**.store.**"
+      - "std"
+      - "github.com/google/uuid"
+
+  - name: "models layer dependencies"
+    description: "modelsパッケージは標準ライブラリのみに依存"
+    packages:
+      - "**.models.**"
+    canOnlyDependOn:
+      - "std"
+
+  # 循環依存の禁止
+  - name: "no circular dependencies"
+    description: "パッケージ間の循環依存を禁止"
+    packages:
+      - "**.api.**"
+      - "**.store.**"
+      - "**.oauth.**"
+      - "**.models.**"
+    cannotDependOn:
+      - "**.cmd.**"
+
+excludes:
+  - "**/vendor/**"
+  - "**/*_test.go"

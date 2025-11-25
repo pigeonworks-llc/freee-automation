@@ -1,0 +1,12 @@
+; Opening Balances (期首残高)
+; These will be populated when syncing from freee
+;
+; NOTE: Replace these example transactions with actual opening balances
+; from freee when performing the initial data migration.
+
+; Example opening balance entry:
+; 2024-11-01 * "Opening Balance" "期首残高"
+;   Assets:Current:Bank:Ordinary        1000000 JPY
+;   Equity:OpeningBalances             -1000000 JPY
+
+; TODO: Populate with actual freee data during initial sync

@@ -1,0 +1,175 @@
+version: '3'
+
+vars:
+  APP_NAME: freee-emulator
+  BUILD_DIR: ./bin
+  DATA_DIR: ./data
+  GO_FILES:
+    sh: find . -type f -name '*.go' -not -path "./vendor/*"
+
+tasks:
+  default:
+    desc: タスク一覧を表示
+    cmds:
+      - task --list
+
+  setup:
+    desc: 開発環境のセットアップ
+    cmds:
+      - go mod download
+      - go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
+      - go install github.com/fdaines/go-arch-lint@latest
+      - go install github.com/swaggo/swag/cmd/swag@latest
+      - mkdir -p {{.BUILD_DIR}}
+      - mkdir -p {{.DATA_DIR}}
+
+  build:
+    desc: アプリケーションをビルド
+    sources:
+      - ./**/*.go
+    generates:
+      - "{{.BUILD_DIR}}/{{.APP_NAME}}"
+    cmds:
+      - go build -o {{.BUILD_DIR}}/{{.APP_NAME}} ./cmd/server
+
+  run:
+    desc: アプリケーションを実行
+    deps: [build]
+    cmds:
+      - "{{.BUILD_DIR}}/{{.APP_NAME}}"
+
+  dev:
+    desc: 開発モードで実行（OpenAPI生成 → サーバー起動）
+    deps: [openapi]
+    cmds:
+      - go run ./cmd/server
+
+  test:
+    desc: テストを実行
+    cmds:
+      - go test -v -race -coverprofile=coverage.out ./...
+
+  test-integration:
+    desc: 統合テストを実行
+    cmds:
+      - go test -v -race ./test/integration/...
+
+  test-parallel:
+    desc: 並列テストを実行
+    cmds:
+      - go test -v -race -parallel 10 -run TestParallel ./test/integration/...
+
+  test-parallel-stress:
+    desc: ストレステスト（並列20）を実行
+    cmds:
+      - go test -v -race -parallel 20 -run TestParallelStress ./test/integration/...
+
+  test-scenario:
+    desc: シナリオテストを実行
+    cmds:
+      - go test -v -race -run TestCompleteScenario ./test/integration/...
+
+  test-coverage:
+    desc: テストカバレッジを表示
+    deps: [test]
+    cmds:
+      - go tool cover -html=coverage.out
+
+  test-all:
+    desc: すべてのテストを実行
+    cmds:
+      - task: test
+      - task: test-integration
+      - task: test-parallel
+
+  lint:
+    desc: golangci-lintを実行
+    cmds:
+      - golangci-lint run --config .golangci.yml ./...
+
+  arch-lint:
+    desc: go-arch-lintを実行
+    cmds:
+      - go-arch-lint check
+
+  lint-all:
+    desc: すべてのlintを実行
+    cmds:
+      - task: lint
+      - task: arch-lint
+
+  fmt:
+    desc: コードをフォーマット
+    cmds:
+      - gofmt -w -s .
+      - goimports -w .
+
+  openapi:
+    desc: OpenAPI仕様を生成
+    cmds:
+      - swag init -g cmd/server/main.go -o docs/openapi --parseDependency --parseInternal
+      - echo "✓ OpenAPI specification generated at docs/openapi/swagger.yaml"
+
+  openapi-fmt:
+    desc: Swaggerコメントをフォーマット
+    cmds:
+      - swag fmt -g cmd/server/main.go
+
+  clean:
+    desc: ビルド成果物をクリーン
+    cmds:
+      - rm -rf {{.BUILD_DIR}}
+      - rm -f coverage.out
+
+  clean-data:
+    desc: データベースをクリーン
+    cmds:
+      - rm -rf {{.DATA_DIR}}/*.db
+
+  docker-build:
+    desc: Dockerイメージをビルド
+    cmds:
+      - docker build -t {{.APP_NAME}}:latest .
+
+  docker-run:
+    desc: Dockerコンテナを実行
+    deps: [docker-build]
+    cmds:
+      - docker run -p 8080:8080 -v $(pwd)/{{.DATA_DIR}}:/app/{{.DATA_DIR}} {{.APP_NAME}}:latest
+
+  mod-tidy:
+    desc: go.modを整理
+    cmds:
+      - go mod tidy
+
+  mod-verify:
+    desc: go.modを検証
+    cmds:
+      - go mod verify
+
+  seed:
+    desc: サンプルデータを投入
+    deps: [build]
+    cmds:
+      - ./scripts/seed.sh
+
+  seed-run:
+    desc: サーバー起動とデータ投入
+    cmds:
+      - task: dev &
+      - sleep 2
+      - task: seed
+
+  ci:
+    desc: CI環境で実行するタスク
+    cmds:
+      - task: mod-verify
+      - task: lint-all
+      - task: test-all
+
+  help:
+    desc: ヘルプを表示
+    cmds:
+      - echo "freee-emulator タスクランナー"
+      - echo ""
+      - task --list

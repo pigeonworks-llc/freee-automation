@@ -1,0 +1,102 @@
+# Account Mapping Configuration
+# freee勘定科目からBeancount勘定科目へのマッピング
+
+# freee Account Item IDs to Beancount Account mapping
+# key: freee account_item_id (or account_item_name)
+# value: Beancount account path
+
+accounts:
+  # Assets (資産)
+  現金: Assets:Current:Cash
+  普通預金: Assets:Current:Bank:Ordinary
+  当座預金: Assets:Current:Bank:Checking
+  定期預金: Assets:Current:Bank:Savings
+  売掛金: Assets:Current:AccountsReceivable
+  未収入金: Assets:Current:AccruedRevenue
+  前払費用: Assets:Current:PrepaidExpenses
+  仮払金: Assets:Current:AdvancePayments
+  商品: Assets:Current:Inventory:Merchandise
+
+  # Fixed Assets (固定資産)
+  建物: Assets:Fixed:Buildings
+  機械装置: Assets:Fixed:Machinery
+  車両運搬具: Assets:Fixed:Vehicles
+  工具器具備品: Assets:Fixed:ToolsAndEquipment
+  土地: Assets:Fixed:Land
+  ソフトウェア: Assets:Fixed:Software
+  敷金: Assets:Fixed:Deposits:Security
+
+  # Liabilities (負債)
+  買掛金: Liabilities:Current:AccountsPayable
+  短期借入金: Liabilities:Current:ShortTermLoans
+  未払金: Liabilities:Current:AccruedExpenses
+  未払費用: Liabilities:Current:AccruedExpenses
+  未払法人税等: Liabilities:Current:IncomeTaxesPayable
+  未払消費税等: Liabilities:Current:ConsumptionTaxPayable
+  預り金: Liabilities:Current:DepositsReceived
+  仮受金: Liabilities:Current:AdvanceReceipts
+  前受金: Liabilities:Current:UnearnedRevenue
+
+  # Long-term Liabilities
+  長期借入金: Liabilities:LongTerm:LongTermLoans
+
+  # Equity (純資産)
+  資本金: Equity:Capital
+  事業主貸: Equity:Drawings
+  事業主借: Equity:Contributions
+
+  # Income (収益)
+  売上高: Income:Sales:Products
+  サービス売上: Income:Sales:Services
+  受取利息: Income:Interest
+  受取配当金: Income:Dividends
+  雑収入: Income:Miscellaneous
+
+  # COGS (売上原価)
+  仕入高: Expenses:COGS:Purchases
+  期首商品棚卸高: Expenses:COGS:BeginningInventory
+  期末商品棚卸高: Expenses:COGS:EndingInventory
+
+  # SGA Expenses (販売費及び一般管理費)
+  役員報酬: Expenses:SGA:ExecutiveCompensation
+  給料手当: Expenses:SGA:Salaries
+  賞与: Expenses:SGA:Bonuses
+  法定福利費: Expenses:SGA:SocialInsurance
+  福利厚生費: Expenses:SGA:WelfareExpenses
+  旅費交通費: Expenses:SGA:TravelAndTransportation
+  通信費: Expenses:SGA:Communications
+  接待交際費: Expenses:SGA:Entertainment
+  会議費: Expenses:SGA:MeetingExpenses
+  広告宣伝費: Expenses:SGA:Advertising
+  消耗品費: Expenses:SGA:Supplies
+  地代家賃: Expenses:SGA:Rent
+  水道光熱費: Expenses:SGA:Utilities
+  支払手数料: Expenses:SGA:Fees
+  支払報酬: Expenses:SGA:ProfessionalFees
+  租税公課: Expenses:SGA:TaxesAndDues
+  減価償却費: Expenses:SGA:Depreciation
+  保険料: Expenses:SGA:Insurance
+  修繕費: Expenses:SGA:RepairsAndMaintenance
+  車両費: Expenses:SGA:VehicleExpenses
+  研究開発費: Expenses:SGA:ResearchAndDevelopment
+  外注費: Expenses:SGA:OutsourcingCosts
+  雑費: Expenses:SGA:Miscellaneous
+
+  # Non-operating Expenses
+  支払利息: Expenses:Interest
+  為替差損: Expenses:ForeignExchangeLoss
+
+# Default account when no mapping is found
+default_asset: Assets:Current:Bank:Ordinary
+default_expense: Expenses:SGA:Miscellaneous
+default_income: Income:Miscellaneous
+default_liability: Liabilities:Current:AccountsPayable
+
+# Tax rate settings
+tax_rates:
+  standard: 0.10      # 標準税率 10%
+  reduced: 0.08       # 軽減税率 8%
+  old_standard: 0.08  # 旧標準税率 8%
+
+# Currency settings
+default_currency: JPY

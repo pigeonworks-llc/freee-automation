@@ -1,0 +1,120 @@
+; Account Definitions for Japanese Accounting
+; 勘定科目定義（日本会計基準準拠）
+
+; ==============================================================================
+; ASSETS (資産)
+; ==============================================================================
+
+; Current Assets (流動資産)
+2024-01-01 open Assets:Current:Cash                      JPY
+2024-01-01 open Assets:Current:Bank:Ordinary              JPY  ; 普通預金
+2024-01-01 open Assets:Current:Bank:Checking              JPY  ; 当座預金
+2024-01-01 open Assets:Current:Bank:Savings               JPY  ; 定期預金
+2024-01-01 open Assets:Current:AccountsReceivable         JPY  ; 売掛金
+2024-01-01 open Assets:Current:AllowanceForDoubtfulAccounts JPY ; 貸倒引当金
+2024-01-01 open Assets:Current:AccruedRevenue             JPY  ; 未収入金
+2024-01-01 open Assets:Current:PrepaidExpenses            JPY  ; 前払費用
+2024-01-01 open Assets:Current:AdvancePayments            JPY  ; 仮払金
+2024-01-01 open Assets:Current:Inventory:Merchandise      JPY  ; 商品
+2024-01-01 open Assets:Current:Inventory:Products         JPY  ; 製品
+2024-01-01 open Assets:Current:Inventory:RawMaterials     JPY  ; 原材料
+2024-01-01 open Assets:Current:Inventory:WorkInProgress   JPY  ; 仕掛品
+
+; Fixed Assets (固定資産)
+2024-01-01 open Assets:Fixed:Buildings                    JPY  ; 建物
+2024-01-01 open Assets:Fixed:BuildingImprovements         JPY  ; 建物附属設備
+2024-01-01 open Assets:Fixed:Structures                   JPY  ; 構築物
+2024-01-01 open Assets:Fixed:Machinery                    JPY  ; 機械装置
+2024-01-01 open Assets:Fixed:Vehicles                     JPY  ; 車両運搬具
+2024-01-01 open Assets:Fixed:ToolsAndEquipment            JPY  ; 工具器具備品
+2024-01-01 open Assets:Fixed:Land                         JPY  ; 土地
+2024-01-01 open Assets:Fixed:AccumulatedDepreciation      JPY  ; 減価償却累計額
+2024-01-01 open Assets:Fixed:Software                     JPY  ; ソフトウェア
+2024-01-01 open Assets:Fixed:Goodwill                     JPY  ; のれん
+2024-01-01 open Assets:Fixed:Deposits:Security            JPY  ; 敷金
+2024-01-01 open Assets:Fixed:Deposits:Guarantee           JPY  ; 差入保証金
+
+; ==============================================================================
+; LIABILITIES (負債)
+; ==============================================================================
+
+; Current Liabilities (流動負債)
+2024-01-01 open Liabilities:Current:AccountsPayable       JPY  ; 買掛金
+2024-01-01 open Liabilities:Current:ShortTermLoans        JPY  ; 短期借入金
+2024-01-01 open Liabilities:Current:AccruedExpenses       JPY  ; 未払金/未払費用
+2024-01-01 open Liabilities:Current:IncomeTaxesPayable    JPY  ; 未払法人税等
+2024-01-01 open Liabilities:Current:ConsumptionTaxPayable JPY  ; 未払消費税等
+2024-01-01 open Liabilities:Current:DepositsReceived      JPY  ; 預り金
+2024-01-01 open Liabilities:Current:AdvanceReceipts       JPY  ; 仮受金
+2024-01-01 open Liabilities:Current:UnearnedRevenue       JPY  ; 前受金
+2024-01-01 open Liabilities:Current:BonusProvision        JPY  ; 賞与引当金
+
+; Long-term Liabilities (固定負債)
+2024-01-01 open Liabilities:LongTerm:LongTermLoans        JPY  ; 長期借入金
+2024-01-01 open Liabilities:LongTerm:Bonds                JPY  ; 社債
+2024-01-01 open Liabilities:LongTerm:RetirementBenefitProvision JPY ; 退職給付引当金
+
+; ==============================================================================
+; EQUITY (純資産)
+; ==============================================================================
+
+2024-01-01 open Equity:Capital                            JPY  ; 資本金
+2024-01-01 open Equity:CapitalReserve                     JPY  ; 資本準備金
+2024-01-01 open Equity:LegalReserve                       JPY  ; 利益準備金
+2024-01-01 open Equity:RetainedEarnings                   JPY  ; 繰越利益剰余金
+2024-01-01 open Equity:CurrentEarnings                    JPY  ; 当期純利益
+2024-01-01 open Equity:Drawings                           JPY  ; 事業主貸
+2024-01-01 open Equity:Contributions                      JPY  ; 事業主借
+2024-01-01 open Equity:OpeningBalances                    JPY  ; 開始残高
+
+; ==============================================================================
+; INCOME (収益)
+; ==============================================================================
+
+2024-01-01 open Income:Sales:Products                     JPY  ; 売上高（製品）
+2024-01-01 open Income:Sales:Services                     JPY  ; サービス売上高
+2024-01-01 open Income:Interest                           JPY  ; 受取利息
+2024-01-01 open Income:Dividends                          JPY  ; 受取配当金
+2024-01-01 open Income:Subsidies                          JPY  ; 補助金収入
+2024-01-01 open Income:ForeignExchangeGain                JPY  ; 為替差益
+2024-01-01 open Income:Miscellaneous                      JPY  ; 雑収入
+
+; ==============================================================================
+; EXPENSES (費用)
+; ==============================================================================
+
+; Cost of Goods Sold (売上原価)
+2024-01-01 open Expenses:COGS:Products                    JPY  ; 売上原価
+2024-01-01 open Expenses:COGS:BeginningInventory          JPY  ; 期首商品棚卸高
+2024-01-01 open Expenses:COGS:Purchases                   JPY  ; 当期商品仕入高
+2024-01-01 open Expenses:COGS:EndingInventory             JPY  ; 期末商品棚卸高
+
+; Selling, General & Administrative Expenses (販売費及び一般管理費)
+2024-01-01 open Expenses:SGA:ExecutiveCompensation        JPY  ; 役員報酬
+2024-01-01 open Expenses:SGA:Salaries                     JPY  ; 給料手当
+2024-01-01 open Expenses:SGA:Bonuses                      JPY  ; 賞与
+2024-01-01 open Expenses:SGA:SocialInsurance              JPY  ; 法定福利費
+2024-01-01 open Expenses:SGA:WelfareExpenses              JPY  ; 福利厚生費
+2024-01-01 open Expenses:SGA:TravelAndTransportation      JPY  ; 旅費交通費
+2024-01-01 open Expenses:SGA:Communications               JPY  ; 通信費
+2024-01-01 open Expenses:SGA:Entertainment                JPY  ; 接待交際費
+2024-01-01 open Expenses:SGA:MeetingExpenses              JPY  ; 会議費
+2024-01-01 open Expenses:SGA:Advertising                  JPY  ; 広告宣伝費
+2024-01-01 open Expenses:SGA:Supplies                     JPY  ; 消耗品費
+2024-01-01 open Expenses:SGA:Rent                         JPY  ; 地代家賃
+2024-01-01 open Expenses:SGA:Utilities                    JPY  ; 水道光熱費
+2024-01-01 open Expenses:SGA:Fees                         JPY  ; 支払手数料
+2024-01-01 open Expenses:SGA:ProfessionalFees             JPY  ; 支払報酬
+2024-01-01 open Expenses:SGA:TaxesAndDues                 JPY  ; 租税公課
+2024-01-01 open Expenses:SGA:Depreciation                 JPY  ; 減価償却費
+2024-01-01 open Expenses:SGA:Insurance                    JPY  ; 保険料
+2024-01-01 open Expenses:SGA:RepairsAndMaintenance        JPY  ; 修繕費
+2024-01-01 open Expenses:SGA:VehicleExpenses              JPY  ; 車両費
+2024-01-01 open Expenses:SGA:ResearchAndDevelopment       JPY  ; 研究開発費
+2024-01-01 open Expenses:SGA:OutsourcingCosts             JPY  ; 外注費
+2024-01-01 open Expenses:SGA:Miscellaneous                JPY  ; 雑費
+
+; Non-operating Expenses (営業外費用)
+2024-01-01 open Expenses:Interest                         JPY  ; 支払利息
+2024-01-01 open Expenses:ForeignExchangeLoss              JPY  ; 為替差損
+2024-01-01 open Expenses:Miscellaneous                    JPY  ; 雑損失

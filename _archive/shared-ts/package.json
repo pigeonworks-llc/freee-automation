@@ -1,0 +1,24 @@
+{
+  "name": "@accounting-system/shared",
+  "version": "1.0.0",
+  "description": "Shared types, utilities, and repositories for accounting system",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc --watch",
+    "clean": "rm -rf dist",
+    "generate-types": "../scripts/generate-types.sh"
+  },
+  "keywords": ["accounting", "beancount", "freee"],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dayjs": "^1.11.10",
+    "dotenv": "^17.2.3"
+  },
+  "devDependencies": {
+    "@types/node": "^24.10.1",
+    "typescript": "^5.9.3"
+  }
+}

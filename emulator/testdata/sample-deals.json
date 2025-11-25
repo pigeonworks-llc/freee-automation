@@ -1,0 +1,78 @@
+[
+  {
+    "company_id": 1,
+    "issue_date": "2025-01-15",
+    "type": "income",
+    "details": [
+      {
+        "account_item_id": 400,
+        "tax_code": 1,
+        "amount": 100000,
+        "description": "コンサルティング売上"
+      }
+    ],
+    "ref_number": "INV-2025-001"
+  },
+  {
+    "company_id": 1,
+    "issue_date": "2025-01-20",
+    "type": "expense",
+    "details": [
+      {
+        "account_item_id": 801,
+        "tax_code": 1,
+        "amount": 50000,
+        "description": "仕入"
+      }
+    ],
+    "ref_number": "EXP-2025-001"
+  },
+  {
+    "company_id": 1,
+    "issue_date": "2025-01-25",
+    "type": "income",
+    "details": [
+      {
+        "account_item_id": 401,
+        "tax_code": 1,
+        "amount": 30000,
+        "description": "Web開発売上"
+      },
+      {
+        "account_item_id": 402,
+        "tax_code": 1,
+        "amount": 20000,
+        "description": "保守売上"
+      }
+    ],
+    "ref_number": "INV-2025-002"
+  },
+  {
+    "company_id": 1,
+    "issue_date": "2025-02-01",
+    "type": "income",
+    "details": [
+      {
+        "account_item_id": 400,
+        "tax_code": 1,
+        "amount": 200000,
+        "description": "システム開発売上"
+      }
+    ],
+    "ref_number": "INV-2025-003"
+  },
+  {
+    "company_id": 1,
+    "issue_date": "2025-02-10",
+    "type": "expense",
+    "details": [
+      {
+        "account_item_id": 138,
+        "tax_code": 0,
+        "amount": 10000,
+        "description": "通信費"
+      }
+    ],
+    "ref_number": "EXP-2025-002"
+  }
+]

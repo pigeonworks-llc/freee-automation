@@ -1,0 +1,33 @@
+; freee sync - 2025-02
+; Generated at 2025-11-20T10:44:32.611Z
+; Deals: 0, Journals: 2
+
+2025-02-01 * "普通預金"
+  Expenses:Unmapped:AccountItem135                            100000 JPY ; 普通預金
+  Expenses:Unmapped:AccountItem400                            -90909 JPY ; 売上高
+  Liabilities:Current:ConsumptionTaxPayable                   -9091 JPY ; 消費税
+
+2025-02-05 * "仕入高"
+  Expenses:Unmapped:AccountItem801                            45454 JPY ; 仕入高
+  Liabilities:Current:ConsumptionTaxPayable                   4546 JPY ; 消費税
+  Expenses:Unmapped:AccountItem138                            5000 JPY ; 支払手数料
+  Expenses:Unmapped:AccountItem135                            -55000 JPY ; 普通預金
+
+2025-02-01 * "普通預金"
+  Expenses:Unmapped:AccountItem135                            100000 JPY ; 普通預金
+  Expenses:Unmapped:AccountItem400                            -90909 JPY ; 売上高
+
+2025-02-05 * "仕入高"
+  Expenses:Unmapped:AccountItem801                            45454 JPY ; 仕入高
+  Expenses:Unmapped:AccountItem138                            5000 JPY ; 支払手数料
+  Expenses:Unmapped:AccountItem135                            -55000 JPY ; 普通預金
+
+2025-02-01 * "普通預金"
+  Expenses:Unmapped:AccountItem135                            100000 JPY ; 普通預金
+  Expenses:Unmapped:AccountItem400                            -90909 JPY ; 売上高
+
+2025-02-05 * "仕入高"
+  Expenses:Unmapped:AccountItem801                            45454 JPY ; 仕入高
+  Expenses:Unmapped:AccountItem138                            5000 JPY ; 支払手数料
+  Expenses:Unmapped:AccountItem135                            -55000 JPY ; 普通預金
+

@@ -1,0 +1,98 @@
+; Main Ledger File for Accounting System
+; メイン台帳ファイル
+;
+; This file aggregates all accounting data synced from freee
+; freeeから同期されたすべての会計データを集約します
+
+; ==============================================================================
+; METADATA & OPTIONS
+; ==============================================================================
+
+option "title" "Accounting System (freee + Beancount)"
+option "operating_currency" "JPY"
+
+; Set Japanese fiscal year (April 1 - March 31)
+; 日本の会計年度（4月1日〜3月31日）
+; NOTE: Fiscal year plugin not available in standard Beancount
+; Fiscal year handling will be done in reporting layer (Fava queries)
+
+; Auto-pad accounts to make balances consistent
+plugin "beancount.plugins.auto"
+
+; Check for balance assertions
+plugin "beancount.plugins.check_closing"
+
+; ==============================================================================
+; ACCOUNT DEFINITIONS
+; ==============================================================================
+
+include "accounts.beancount"
+
+; ==============================================================================
+; OPENING BALANCES
+; ==============================================================================
+
+include "opening-balances.beancount"
+
+; ==============================================================================
+; TRANSACTIONS (by fiscal year and month)
+; ==============================================================================
+
+; Include monthly transaction files
+; freee sync will generate these files automatically
+
+; FY2024 (2024/04 - 2025/03)
+include "2024/2024-11.beancount"
+include "2024/2024-12.beancount"
+
+; FY2025 (2025/04 - 2026/03)
+include "2025/2025-01.beancount"
+include "2025/2025-02.beancount"
+include "2025/2025-03.beancount"
+include "2025/2025-04.beancount"
+include "2025/2025-05.beancount"
+include "2025/2025-06.beancount"
+include "2025/2025-07.beancount"
+include "2025/2025-08.beancount"
+include "2025/2025-09.beancount"
+include "2025/2025-10.beancount"
+
+; ==============================================================================
+; FAVA CUSTOM QUERIES
+; ==============================================================================
+
+; Balance Sheet (貸借対照表)
+2024-01-01 custom "fava-query" "balance-sheet" "
+  SELECT
+    account,
+    sum(position) AS balance
+  WHERE
+    account ~ '^(Assets|Liabilities|Equity)'
+  GROUP BY account
+  ORDER BY account
+"
+
+; Income Statement (損益計算書)
+2024-01-01 custom "fava-query" "income-statement" "
+  SELECT
+    account,
+    sum(position) AS amount
+  WHERE
+    account ~ '^(Income|Expenses)'
+    AND year = year(today()) OR year = year(today()) - 1
+  GROUP BY account
+  ORDER BY account
+"
+
+; Monthly Expenses (月次費用推移)
+2024-01-01 custom "fava-query" "monthly-expenses" "
+  SELECT
+    year,
+    month,
+    account,
+    sum(position) AS amount
+  WHERE
+    account ~ '^Expenses'
+  GROUP BY year, month, account
+  ORDER BY year DESC, month DESC
+"

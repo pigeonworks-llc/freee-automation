@@ -1,0 +1,47 @@
+; freee sync - 2025-01
+; Generated at 2025-11-20T10:44:32.610Z
+; Deals: 3, Journals: 0
+
+2025-01-15 * "売上" #INV-2025-001
+  Expenses:Unmapped:AccountItem400                            -100000 JPY ; 売上
+  Liabilities:Current:ConsumptionTaxPayable                   -10000 JPY ; 消費税
+  Assets:Current:Bank:Ordinary                                110000 JPY
+
+2025-01-20 * "仕入" #EXP-2025-001
+  Expenses:Unmapped:AccountItem801                            50000 JPY ; 仕入
+  Liabilities:Current:ConsumptionTaxPayable                   5000 JPY ; 消費税
+  Assets:Current:Bank:Ordinary                                -55000 JPY
+
+2025-01-25 * "収入: Account Item 401, Account Item 402" #INV-2025-002
+  Expenses:Unmapped:AccountItem401                            -30000 JPY ; コンサルティング売上
+  Liabilities:Current:ConsumptionTaxPayable                   -3000 JPY ; 消費税
+  Expenses:Unmapped:AccountItem402                            -20000 JPY ; システム開発売上
+  Liabilities:Current:ConsumptionTaxPayable                   -2000 JPY ; 消費税
+  Assets:Current:Bank:Ordinary                                55000 JPY
+
+2025-01-15 * "売上" #INV-2025-001
+  Expenses:Unmapped:AccountItem400                            -100000 JPY ; 売上
+  Assets:Current:Bank:Ordinary                                110000 JPY
+
+2025-01-20 * "仕入" #EXP-2025-001
+  Expenses:Unmapped:AccountItem801                            50000 JPY ; 仕入
+  Assets:Current:Bank:Ordinary                                -55000 JPY
+
+2025-01-25 * "収入: Account Item 401, Account Item 402" #INV-2025-002
+  Expenses:Unmapped:AccountItem401                            -30000 JPY ; コンサルティング売上
+  Expenses:Unmapped:AccountItem402                            -20000 JPY ; システム開発売上
+  Assets:Current:Bank:Ordinary                                55000 JPY
+
+2025-01-15 * "売上" #INV-2025-001
+  Expenses:Unmapped:AccountItem400                            -100000 JPY ; 売上
+  Assets:Current:Bank:Ordinary                                110000 JPY
+
+2025-01-20 * "仕入" #EXP-2025-001
+  Expenses:Unmapped:AccountItem801                            50000 JPY ; 仕入
+  Assets:Current:Bank:Ordinary                                -55000 JPY
+
+2025-01-25 * "収入: Account Item 401, Account Item 402" #INV-2025-002
+  Expenses:Unmapped:AccountItem401                            -30000 JPY ; コンサルティング売上
+  Expenses:Unmapped:AccountItem402                            -20000 JPY ; システム開発売上
+  Assets:Current:Bank:Ordinary                                55000 JPY
+

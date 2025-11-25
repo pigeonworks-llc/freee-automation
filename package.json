@@ -1,0 +1,26 @@
+{
+  "name": "accounting-system",
+  "version": "1.0.0",
+  "description": "Integrated accounting system with freee API and Beancount",
+  "private": true,
+  "workspaces": [
+    "_archive/shared-ts",
+    "amazon-receipt-processor"
+  ],
+  "scripts": {
+    "generate-types": "./scripts/generate-types.sh",
+    "build": "npm run build --workspaces --if-present",
+    "clean": "npm run clean --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present",
+    "emulator:build": "cd emulator && go build -o bin/freee-emulator ./cmd/server",
+    "emulator:dev": "cd emulator && go run ./cmd/server",
+    "emulator:openapi": "cd emulator && swag init -g cmd/server/main.go -o docs/openapi --parseDependency --parseInternal"
+  },
+  "keywords": ["accounting", "beancount", "freee"],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "openapi-typescript": "^7.4.4",
+    "swagger2openapi": "^7.0.8"
+  }
+}
